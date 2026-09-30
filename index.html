@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Agent Desk</title>
+<meta name="description" content="Agent Desk – মাস্টার এজেন্টদের হোয়াটসঅ্যাপ যোগাযোগ তালিকা। আইডি বা ফোন নম্বর দিয়ে এজেন্ট খুঁজুন। শুধুমাত্র ১৮+ ব্যবহারকারীদের জন্য।">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#0f1b2d">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@600;700;800&family=Hind+Siliguri:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Layout: phone-first single column (max 480px), sticky header, whole-card tap targets */
+:root{
+  --bg:#f3f5f9; --surface:#ffffff; --ink:#0f1b2d; --muted:#667189; --line:#e3e7ef;
+  --teal:#0e9f8e; --teal-soft:#e3f5f2; --gold:#e8a317; --gold-soft:#fdf3dc; --wa:#1faa59; --red:#d93548;
+  --display:"Anek Bangla","Hind Siliguri",system-ui,sans-serif;
+  --body:"Hind Siliguri","Noto Sans Bengali",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:14px;line-height:1.55;-webkit-text-size-adjust:100%}
+a{color:inherit}
+.wrap{max-width:480px;margin:0 auto;padding-inline:14px;padding-block:0 88px}
+
+header{position:sticky;top:0;z-index:10;background:var(--ink);color:#fff;padding:10px 14px;padding-top:calc(10px + env(safe-area-inset-top,0px))}
+header .in{max-width:452px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.logo{font-family:var(--display);font-weight:800;font-size:1.1rem;text-decoration:none}
+.logo span{color:var(--gold)}
+.status{display:flex;align-items:center;gap:5px;font-size:.7rem;font-weight:600;background:rgba(255,255,255,.1);padding:3px 10px;border-radius:999px}
+.status i{width:7px;height:7px;border-radius:50%;background:#35d07f;display:block}
+nav.top{display:flex;gap:4px;justify-content:center;flex-wrap:wrap;padding-top:10px}
+nav.top a{font-size:.72rem;font-weight:600;text-decoration:none;color:var(--muted);padding:3px 9px;border-radius:999px;background:var(--surface);border:1px solid var(--line)}
+
+.hero{text-align:center;padding-block:18px 12px}
+.hero h1{font-family:var(--display);font-weight:800;font-size:1.45rem;margin:0 0 2px;text-wrap:balance}
+.hero p{margin:0;color:var(--muted);font-size:.85rem}
+
+h2.label{font-family:var(--body);font-size:.68rem;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin:20px 2px 8px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;display:grid;gap:8px}
+.panel label{font-size:.75rem;font-weight:600;color:var(--muted)}
+select,input{width:100%;font:inherit;font-size:16px;padding:9px 12px;border:1.5px solid var(--line);border-radius:9px;background:var(--bg);color:var(--ink)}
+select:focus,input:focus{outline:none;border-color:var(--teal)}
+.btn{font:inherit;font-family:var(--display);font-weight:700;font-size:.92rem;border:0;border-radius:9px;padding:10px;cursor:pointer;background:var(--teal);color:#fff;margin-top:2px}
+.btn:hover{filter:brightness(1.07)}
+.btn:focus-visible,a:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.result{font-size:.82rem;padding:9px 11px;border-radius:9px;background:var(--teal-soft)}
+.result.no{background:#fdecee;color:var(--red)}
+.result a{font-weight:700;color:var(--teal)}
+
+.list{display:grid;gap:8px}
+a.agent{display:flex;align-items:center;justify-content:space-between;gap:10px;text-decoration:none;background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--teal);border-radius:12px;padding:11px 12px;transition:transform .12s,box-shadow .12s}
+a.agent:hover{box-shadow:0 4px 14px rgba(15,27,45,.08)}
+a.agent:active{transform:scale(.985)}
+.agent .who{min-width:0;display:grid;gap:1px}
+.agent .role{font-size:.7rem;font-weight:600;color:var(--teal)}
+.agent .id{font-family:var(--display);font-weight:700;font-size:.98rem}
+.agent .id b{color:var(--gold)}
+.agent .num{font-size:.78rem;color:var(--muted);font-variant-numeric:tabular-nums;word-break:break-all}
+.pill{flex:none;display:inline-flex;align-items:center;gap:5px;font-size:.75rem;font-weight:600;color:#fff;background:var(--wa);padding:6px 10px;border-radius:8px}
+.pill svg,.wa svg{width:15px;height:15px;fill:currentColor}
+
+.chat{text-align:center;background:linear-gradient(135deg,var(--ink),#16304f);color:#fff;border-radius:12px;padding:16px 14px;display:grid;gap:9px;justify-items:center}
+.chat p{margin:0;font-size:.85rem;opacity:.9}
+.wa{display:inline-flex;align-items:center;gap:7px;text-decoration:none;font-weight:600;font-size:.88rem;color:#fff;background:var(--wa);padding:9px 18px;border-radius:9px;font-variant-numeric:tabular-nums}
+
+.age{display:flex;gap:10px;align-items:flex-start;background:var(--gold-soft);border-radius:12px;padding:12px;margin-top:20px}
+.age strong.b{flex:none;background:var(--red);color:#fff;font-weight:700;border-radius:7px;padding:4px 7px;font-size:.75rem}
+.age p{margin:0;font-size:.8rem}
+
+.doc{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:4px 14px;margin-top:10px}
+.doc details{border-bottom:1px solid var(--line)}
+.doc details:last-child{border-bottom:0}
+.doc summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;padding:11px 0;font-family:var(--display);font-weight:700;font-size:.9rem}
+.doc summary::-webkit-details-marker{display:none}
+.doc summary::after{content:"+";color:var(--teal);font-size:1.1rem}
+.doc details[open] summary::after{content:"−"}
+.doc .body{font-size:.8rem;color:var(--muted);padding-bottom:12px}
+.doc .body p{margin:0 0 7px}
+.doc .body ul{margin:0 0 7px;padding-left:18px}
+.doc .body li{margin-bottom:3px}
+.doc h3{font-size:.8rem;color:var(--ink);margin:8px 0 3px}
+
+footer{text-align:center;font-size:.7rem;color:var(--muted);margin-top:18px;display:grid;gap:4px}
+footer nav{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+footer nav a{color:var(--teal);text-decoration:none;font-weight:600}
+
+.float{position:fixed;right:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px));width:50px;height:50px;border-radius:50%;background:var(--wa);display:grid;place-items:center;box-shadow:0 6px 18px rgba(0,0,0,.22);z-index:20}
+.float svg{width:26px;height:26px;fill:#fff}
+@media (prefers-reduced-motion:no-preference){.float{animation:pop 2.6s ease-in-out infinite}@keyframes pop{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}}
+@media (max-width:360px){body{font-size:13px}.wrap{padding-inline:10px}.pill span{display:none}}
+</style>
+</head>
+<body>
+
+<header><div class="in">
+  <a class="logo" href="#top">Agent<span>Desk</span></a>
+  <div class="status"><i></i>অনলাইন</div>
+</div></header>
+
+<main class="wrap" id="top">
+  <nav class="top" aria-label="পেজের অংশ">
+    <a href="#agents">এজেন্ট তালিকা</a><a href="#about">আমাদের সম্পর্কে</a><a href="#privacy">গোপনীয়তা</a><a href="#terms">শর্তাবলী</a>
+  </nav>
+
+  <section class="hero">
+    <h1>এজেন্ট খুঁজুন</h1>
+    <p>আইডি বা ফোন নম্বর দিয়ে এজেন্টের যোগাযোগ তথ্য দেখুন</p>
+  </section>
+
+  <form class="panel" id="idForm">
+    <label for="type">এজেন্টের ধরন</label>
+    <select id="type">
+      <option value="master">মাস্টার এজেন্ট</option>
+      <option value="super">সুপার এজেন্ট</option>
+      <option value="sub">সাব এজেন্ট</option>
+    </select>
+    <label for="agentId">এজেন্ট আইডি</label>
+    <input id="agentId" inputmode="numeric" placeholder="যেমন: 101" autocomplete="off">
+    <button class="btn" type="submit">খুঁজুন</button>
+    <div class="result" id="idResult" hidden></div>
+  </form>
+
+  <h2 class="label" id="agents">মাস্টার এজেন্ট তালিকা</h2>
+  <div class="list" id="list"></div>
+
+  <h2 class="label">ফোন নম্বর যাচাই</h2>
+  <form class="panel" id="phoneForm">
+    <label for="phone">ফোন নম্বর</label>
+    <input id="phone" inputmode="tel" placeholder="যেমন: +60172670819" autocomplete="off">
+    <button class="btn" type="submit">যাচাই করুন</button>
+    <div class="result" id="phoneResult" hidden></div>
+  </form>
+
+  <h2 class="label">সরাসরি যোগাযোগ</h2>
+  <div class="chat">
+    <p>যেকোনো প্রশ্নে হোয়াটসঅ্যাপে মেসেজ দিন</p>
+    <a class="wa" id="mainChat" target="_blank" rel="noopener"></a>
+  </div>
+
+  <div class="age">
+    <strong class="b">18+</strong>
+    <p>এই ওয়েবসাইট শুধুমাত্র <b>১৮ বছর বা তার বেশি</b> বয়সীদের জন্য। ১৮ বছরের কম বয়সীদের এই সাইট ব্যবহার বা কোনো এজেন্টের সাথে যোগাযোগ করা সম্পূর্ণ নিষেধ।</p>
+  </div>
+
+  <div class="doc">
+    <details id="about">
+      <summary>আমাদের সম্পর্কে</summary>
+      <div class="body">
+        <p>Agent Desk একটি তথ্যভিত্তিক ডিরেক্টরি, যেখানে আমাদের এজেন্টদের আইডি ও হোয়াটসঅ্যাপ নম্বর এক জায়গায় রাখা হয়েছে, যাতে ব্যবহারকারী সহজে সঠিক নম্বর খুঁজে পান এবং ভুয়া নম্বর থেকে সাবধান থাকতে পারেন।</p>
+        <p>এই সাইটে কোনো অ্যাকাউন্ট খোলা, লগইন বা টাকা লেনদেনের ব্যবস্থা নেই। সাইটটি শুধু যোগাযোগের তথ্য দেখায়।</p>
+      </div>
+    </details>
+    <details id="privacy">
+      <summary>গোপনীয়তা নীতি (Privacy Policy)</summary>
+      <div class="body">
+        <p>সর্বশেষ হালনাগাদ: ৩০ সেপ্টেম্বর ২০২৬</p>
+        <h3>আমরা কী তথ্য সংগ্রহ করি</h3>
+        <p>এই সাইটে কোনো রেজিস্ট্রেশন ফর্ম নেই। আপনি সার্চ বক্সে যে আইডি বা ফোন নম্বর লেখেন, তা আপনার ব্রাউজারেই যাচাই হয়; আমাদের সার্ভারে পাঠানো বা সংরক্ষণ করা হয় না।</p>
+        <h3>কুকি ও অ্যানালিটিক্স</h3>
+        <p>সাইটের পারফরম্যান্স ও বিজ্ঞাপনের ফলাফল বোঝার জন্য তৃতীয় পক্ষের টুল (যেমন Google Analytics বা Google Ads) কুকি ব্যবহার করতে পারে। এসব কুকি ব্রাউজারের ধরন, ডিভাইস ও ভিজিটের সময়ের মতো সাধারণ তথ্য সংগ্রহ করে। আপনি ব্রাউজার সেটিংস থেকে কুকি বন্ধ করতে পারেন।</p>
+        <h3>হোয়াটসঅ্যাপ</h3>
+        <p>হোয়াটসঅ্যাপ বাটনে চাপ দিলে আপনি WhatsApp-এ চলে যাবেন। সেখানে আপনার তথ্য WhatsApp-এর নিজস্ব গোপনীয়তা নীতি অনুযায়ী পরিচালিত হয়।</p>
+        <h3>তথ্য শেয়ার</h3>
+        <p>আমরা কোনো ব্যক্তিগত তথ্য বিক্রি বা তৃতীয় পক্ষের সাথে শেয়ার করি না, আইনগতভাবে বাধ্য না হলে।</p>
+        <h3>অপ্রাপ্তবয়স্ক</h3>
+        <p>আমরা জেনেশুনে ১৮ বছরের কম বয়সী কারো তথ্য সংগ্রহ করি না।</p>
+        <h3>যোগাযোগ</h3>
+        <p>গোপনীয়তা নিয়ে প্রশ্ন থাকলে নিচের হোয়াটসঅ্যাপ নম্বরে যোগাযোগ করুন: <span class="mainNum"></span></p>
+      </div>
+    </details>
+    <details id="terms">
+      <summary>শর্তাবলী (Terms &amp; Conditions)</summary>
+      <div class="body">
+        <ul>
+          <li>এই সাইট ব্যবহার করে আপনি নিশ্চিত করছেন যে আপনার বয়স কমপক্ষে ১৮ বছর।</li>
+          <li>আপনার দেশের প্রচলিত আইন মেনে চলা আপনার নিজের দায়িত্ব। যেখানে এ ধরনের সেবা আইনত নিষিদ্ধ, সেখান থেকে সাইটটি ব্যবহার করবেন না।</li>
+          <li>সাইটের তথ্য শুধুমাত্র যোগাযোগের সুবিধার জন্য। কোনো এজেন্টের সাথে লেনদেনের আগে নিজে যাচাই করে নিন।</li>
+          <li>এই তালিকার বাইরের কোনো নম্বরের সাথে লেনদেন করলে তার দায় আমাদের নয়।</li>
+          <li>আমরা যেকোনো সময় তালিকা ও এই শর্তাবলী পরিবর্তন করতে পারি।</li>
+        </ul>
+      </div>
+    </details>
+    <details id="disclaimer">
+      <summary>দায়মুক্তি (Disclaimer)</summary>
+      <div class="body">
+        <p>এই ওয়েবসাইট কোনো পণ্য বা সেবা বিক্রি করে না এবং কোনো আর্থিক লেনদেন পরিচালনা করে না। এখানে শুধু এজেন্টদের যোগাযোগের তথ্য দেখানো হয়। ব্যবহারকারী নিজ দায়িত্বে যোগাযোগ করবেন। সাইটের তথ্য ব্যবহারের ফলে কোনো ক্ষতি হলে তার দায় আমরা নেব না।</p>
+      </div>
+    </details>
+    <details id="responsible">
+      <summary>দায়িত্বশীল ব্যবহার</summary>
+      <div class="body">
+        <p>নিজের সামর্থ্যের বাইরে কখনো টাকা খরচ করবেন না। ধার করে বা জরুরি প্রয়োজনের টাকা দিয়ে কোনো লেনদেন করবেন না। যদি মনে হয় নিয়ন্ত্রণ হারাচ্ছেন, বিরতি নিন এবং পরিবার বা বিশ্বস্ত কারো সাথে কথা বলুন।</p>
+      </div>
+    </details>
+  </div>
+
+  <footer>
+    <nav><a href="#privacy">Privacy Policy</a><a href="#terms">Terms</a><a href="#disclaimer">Disclaimer</a></nav>
+    <div>© <span id="yr"></span> Agent Desk. সর্বস্বত্ব সংরক্ষিত।</div>
+  </footer>
+</main>
+
+<a class="float" id="floatWa" target="_blank" rel="noopener" aria-label="হোয়াটসঅ্যাপে চ্যাট করুন"></a>
+
+<script>
+/* ===== এখানে নম্বর ও আইডি বদলান ===== */
+const MAIN_WHATSAPP = "+60172670819";
+const AGENTS = [
+  { id: "101", type: "master", phone: "+60172670819" },
+  { id: "102", type: "master", phone: "+971567481272" },
+  { id: "103", type: "master", phone: "+601161481563" },
+  { id: "104", type: "master", phone: "+60182983893" },
+];
+/* ==================================== */
+
+const TYPE_BN = { master: "মাস্টার এজেন্ট", super: "সুপার এজেন্ট", sub: "সাব এজেন্ট" };
+const WA = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.2.1-.1 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.2 2.2 2.2 0 0 0 .1-1.3c0-.1-.2-.2-.5-.3Z"/></svg>';
+const digits = s => s.replace(/\D/g, "");
+const waLink = p => "https://wa.me/" + digits(p);
+
+/* পুরো কার্ডটাই লিংক: যেকোনো জায়গায় চাপ দিলে ওই নম্বরের হোয়াটসঅ্যাপ খুলবে */
+document.getElementById("list").innerHTML = AGENTS.map(a => `
+  <a class="agent" href="${waLink(a.phone)}" target="_blank" rel="noopener" aria-label="${TYPE_BN[a.type]} ${a.id} – হোয়াটসঅ্যাপ ${a.phone}">
+    <div class="who">
+      <span class="role">${TYPE_BN[a.type]}</span>
+      <span class="id">আইডি <b>${a.id}</b></span>
+      <span class="num">${a.phone}</span>
+    </div>
+    <span class="pill">${WA}<span>মেসেজ</span></span>
+  </a>`).join("");
+
+const main = document.getElementById("mainChat");
+main.href = waLink(MAIN_WHATSAPP);
+main.innerHTML = WA + MAIN_WHATSAPP;
+const fl = document.getElementById("floatWa");
+fl.href = waLink(MAIN_WHATSAPP);
+fl.innerHTML = WA;
+document.querySelectorAll(".mainNum").forEach(e => e.textContent = MAIN_WHATSAPP);
+
+function show(el, html, bad){ el.innerHTML = html; el.hidden = false; el.classList.toggle("no", !!bad); }
+const link = a => `<a href="${waLink(a.phone)}" target="_blank" rel="noopener">${a.phone}</a>`;
+
+document.getElementById("idForm").addEventListener("submit", e => {
+  e.preventDefault();
+  const t = document.getElementById("type").value;
+  const id = document.getElementById("agentId").value.trim();
+  const out = document.getElementById("idResult");
+  if (!id) return show(out, "একটি এজেন্ট আইডি লিখুন।", true);
+  const a = AGENTS.find(x => x.id === id && x.type === t);
+  a ? show(out, `${TYPE_BN[a.type]} আইডি <b>${a.id}</b> — হোয়াটসঅ্যাপ: ${link(a)}`)
+    : show(out, `${TYPE_BN[t]} তালিকায় আইডি <b>${id}</b> পাওয়া যায়নি।`, true);
+});
+
+document.getElementById("phoneForm").addEventListener("submit", e => {
+  e.preventDefault();
+  const q = digits(document.getElementById("phone").value);
+  const out = document.getElementById("phoneResult");
+  if (q.length < 6) return show(out, "পুরো ফোন নম্বর লিখুন।", true);
+  const a = AGENTS.find(x => digits(x.phone).endsWith(q) || q.endsWith(digits(x.phone)));
+  a ? show(out, `এই নম্বরটি ${TYPE_BN[a.type]} আইডি <b>${a.id}</b>-এর: ${link(a)}`)
+    : show(out, "এই নম্বরটি আমাদের তালিকায় নেই। এই নম্বরে লেনদেন করবেন না।", true);
+});
+
+/* ফুটারের লিংকে চাপ দিলে সংশ্লিষ্ট অংশ খুলে যাবে */
+function openFromHash(){ const d = document.getElementById(location.hash.slice(1)); if (d && d.tagName === "DETAILS") d.open = true; }
+window.addEventListener("hashchange", openFromHash); openFromHash();
+document.getElementById("yr").textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
